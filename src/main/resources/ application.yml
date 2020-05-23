@@ -1,0 +1,5 @@
+gitee:
+  oauth:
+    clientid: 387e33a6d460cd667d194d0a64a377f4c4ec33d44f41a90a9e124ff02939acbb
+    clientsecret: e0617287b7b8984d2332f39f35c0463d8db2315c3356a3093144155ef5e9534c
+    callback: http://localhost:8081/callback

@@ -2,12 +2,11 @@ package life.manong.community.dto;
 
 /**
  * @authon GMY
- * @create 2020-05-22 20:30
+ * @create 2020-05-23 13:47
  */
-public class GIthubUser {
+public class GiteeUser {
     private String name;
     private long id;
-    private String bio;
 
     public String getName() {
         return name;
@@ -25,20 +24,11 @@ public class GIthubUser {
         this.id = id;
     }
 
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
     @Override
     public String toString() {
-        return "GIthubUser{" +
+        return "GiteeUser{" +
                 "name='" + name + '\'' +
                 ", id=" + id +
-                ", bio='" + bio + '\'' +
                 '}';
     }
 }
