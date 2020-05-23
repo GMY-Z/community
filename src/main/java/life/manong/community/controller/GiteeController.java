@@ -10,9 +10,12 @@ import life.manong.community.provider.GiteeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.util.UUID;
@@ -60,7 +63,8 @@ public class GiteeController {
      * 授权回调
      */
     @GetMapping(value = "/callback")
-    public String qqCallback(HttpServletRequest request) throws Exception {
+    public String qqCallback(HttpServletRequest request,
+                             HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
         // 得到Authorization Code
         String code = request.getParameter("code");
@@ -90,20 +94,22 @@ public class GiteeController {
         /**
          * 获取到用户信息之后，就该写你自己的业务逻辑了
          */
-        //登录成功，写cookie和session
-        System.out.println(jsonObject);
+
         GiteeUser giteeUser = JSON.parseObject(jsonObject.toString(), GiteeUser.class);
         System.out.println(giteeUser);
-        //登录成功，写cookie和session
-        request.getSession().setAttribute("user", giteeUser);
         //
         User user = new User();
         user.setAccountId(String.valueOf(giteeUser.getId()));
         user.setName(giteeUser.getName());
-        user.setToken(UUID.randomUUID().toString());
+        String token = UUID.randomUUID().toString();
+        user.setToken(token);//生成token放到user对象中
         user.setGmtCreate(System.currentTimeMillis());
         user.setGmtModified(user.getGmtCreate());
+        //存到数据库中
         userMapper.insert(user);
+        //并且把token放到cookie中
+//        request.getSession().setAttribute("user", giteeUser);
+        response.addCookie(new Cookie("token",token));
         return "redirect:/";
     }
 
