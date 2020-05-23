@@ -97,7 +97,7 @@ public class GiteeController {
 
         GiteeUser giteeUser = JSON.parseObject(jsonObject.toString(), GiteeUser.class);
         System.out.println(giteeUser);
-        //
+
         User user = new User();
         user.setAccountId(String.valueOf(giteeUser.getId()));
         user.setName(giteeUser.getName());
@@ -105,6 +105,7 @@ public class GiteeController {
         user.setToken(token);//生成token放到user对象中
         user.setGmtCreate(System.currentTimeMillis());
         user.setGmtModified(user.getGmtCreate());
+        user.setAvatarUrl(giteeUser.getAvatarUrl());
         //存到数据库中
         userMapper.insert(user);
         //并且把token放到cookie中

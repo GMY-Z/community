@@ -17,7 +17,7 @@ import javax.websocket.server.ServerEndpoint;
 @Mapper
 public interface UserMapper {
 
-    @Insert("insert into user(account_id,name,token,gmt_create,gmt_modified) values(#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified})")
+    @Insert("insert into user(account_id,name,token,gmt_create,gmt_modified,avatar_url) values(#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
     void insert(User user);
 
     @Select("select * from user where token = #{token}")
