@@ -1,13 +1,20 @@
 package life.manong.community.controller;
 
 import life.manong.community.Mapper.UserMapper;
+import life.manong.community.dto.PaginationDTO;
+import life.manong.community.dto.QuestionDTO;
+import life.manong.community.model.Question;
 import life.manong.community.model.User;
+import life.manong.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  *
@@ -22,6 +29,9 @@ public class IndexController {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private QuestionService questionService;
+
     /*
     18实现持久化登录状态获取。给了用户一个token，前端根据token检验是否为登录状态，后端服务可以重启
 
@@ -35,7 +45,9 @@ public class IndexController {
     以后用redis等机制
      */
     @GetMapping("/")
-    public String index(HttpServletRequest request) {
+    public String index(HttpServletRequest request, Model model,
+                        @RequestParam(name = "page",defaultValue = "1")Integer page,
+                        @RequestParam(name = "size",defaultValue = "2") Integer size) {
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length != 0) {
@@ -51,6 +63,9 @@ public class IndexController {
                 }
             }
         }
+        PaginationDTO pagination = questionService.list(page,size);
+        model.addAttribute("pagination", pagination);
+
         return "index";
     }
 
