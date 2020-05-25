@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ProfileController {
 
-
-
     @Autowired
     private QuestionService questionService;
 

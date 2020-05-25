@@ -102,4 +102,17 @@ public class QuestionService {
 
         return paginationDTO;
     }
+
+
+    public QuestionDTO getById(Integer id) {
+        //查询id为id的文章信息
+        Question question = questionMapper.getById(id);
+        //查找文章的作者
+        User user = userMapper.findById(question.getCreator());
+        //封装成DTO
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question,questionDTO);
+        questionDTO.setUser(user);
+        return questionDTO;
+    }
 }

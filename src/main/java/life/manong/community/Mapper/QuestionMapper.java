@@ -1,6 +1,7 @@
 package life.manong.community.Mapper;
 
 import life.manong.community.model.Question;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -30,4 +31,7 @@ public interface QuestionMapper {
 
     @Select("select count(1) from question where creator = #{userId}")
     Integer countByUserId(@Param("userId")Integer id);
+
+    @Select("select * from question where id = #{id}")
+    Question getById(@Param("id") Integer id);
 }
