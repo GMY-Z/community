@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
+ *
+ *
  * @authon GMY
  * @create 2020-05-24 09:30
  */
@@ -27,10 +30,53 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+    /*
+    return 所有问题
+     */
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalCount = questionMapper.count();
-        paginationDTO.setPagination(totalCount,page,size);
+        Integer totalPage = 0;
+        if (totalCount % size != 0) {
+            totalPage = totalCount / size + 1;
+        } else {
+            totalPage = totalCount / size;
+        }
+        paginationDTO.setPagination(totalPage,page);
+        if (page < 1) {
+            page = 1;
+        }
+        if (page > totalPage) {
+            page = totalPage;
+        }
+        if (page == 0) {
+            page = 1;
+        }
+        Integer offset = size * (page - 1);
+        List<QuestionDTO> list = new ArrayList<>();
+        List<Question> questions = questionMapper.list(offset,size);
+        for (Question question : questions) {
+            User user = userMapper.findById(question.getCreator());
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(question,questionDTO);//快速拷贝属性
+            questionDTO.setUser(user);
+            list.add(questionDTO);
+        }
+        paginationDTO.setData(list);
+
+        return paginationDTO;
+    }
+
+    public PaginationDTO list(Integer id, Integer page, Integer size) {
+        PaginationDTO paginationDTO = new PaginationDTO();
+        Integer totalCount = questionMapper.countByUserId(id);
+        Integer totalPage = 0;
+        if (totalCount % size != 0) {
+            totalPage = totalCount / size + 1;
+        } else {
+            totalPage = totalCount / size;
+        }
+        paginationDTO.setPagination(totalPage,page);
         if (page < 1) {
             page = 1;
         }
@@ -38,10 +84,12 @@ public class QuestionService {
             page = paginationDTO.getTotalPage();
         }
 
-
+        if (page == 0) {
+            page = 1;
+        }
         Integer offset = size * (page - 1);
         List<QuestionDTO> list = new ArrayList<>();
-        List<Question> questions = questionMapper.list(offset,size);
+        List<Question> questions = questionMapper.listByUserId(id,offset,size);
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
