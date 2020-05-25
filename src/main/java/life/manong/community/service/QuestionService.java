@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- *
- *
  * @authon GMY
  * @create 2020-05-24 09:30
  */
@@ -42,7 +39,7 @@ public class QuestionService {
         } else {
             totalPage = totalCount / size;
         }
-        paginationDTO.setPagination(totalPage,page);
+
         if (page < 1) {
             page = 1;
         }
@@ -51,14 +48,16 @@ public class QuestionService {
         }
         if (page == 0) {
             page = 1;
+            totalPage = 1;
         }
+        paginationDTO.setPagination(totalPage, page);
         Integer offset = size * (page - 1);
         List<QuestionDTO> list = new ArrayList<>();
-        List<Question> questions = questionMapper.list(offset,size);
+        List<Question> questions = questionMapper.list(offset, size);
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);//快速拷贝属性
+            BeanUtils.copyProperties(question, questionDTO);//快速拷贝属性
             questionDTO.setUser(user);
             list.add(questionDTO);
         }
@@ -76,24 +75,26 @@ public class QuestionService {
         } else {
             totalPage = totalCount / size;
         }
-        paginationDTO.setPagination(totalPage,page);
+
         if (page < 1) {
             page = 1;
         }
-        if (page > paginationDTO.getTotalPage()) {
-            page = paginationDTO.getTotalPage();
+        if (page > totalPage) {
+            page = totalPage;
         }
 
         if (page == 0) {
             page = 1;
+            totalPage = 1;
         }
+        paginationDTO.setPagination(totalPage, page);
         Integer offset = size * (page - 1);
         List<QuestionDTO> list = new ArrayList<>();
-        List<Question> questions = questionMapper.listByUserId(id,offset,size);
+        List<Question> questions = questionMapper.listByUserId(id, offset, size);
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);//快速拷贝属性
+            BeanUtils.copyProperties(question, questionDTO);//快速拷贝属性
             questionDTO.setUser(user);
             list.add(questionDTO);
         }
