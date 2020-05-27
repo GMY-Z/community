@@ -7,6 +7,7 @@ import life.manong.community.dto.GIthubUser;
 import life.manong.community.model.User;
 import life.manong.community.provider.GiteeProvider;
 import life.manong.community.provider.GithubProvider;
+import life.manong.community.service.UserService;
 import org.apache.ibatis.javassist.ClassPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class AuthorizeController {
     private String redirectUrl;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
    // @GetMapping("callback")
     public String callback(@RequestParam(name = "code") String code,
@@ -71,9 +72,8 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(gIthubUser.getId()));
             user.setName(gIthubUser.getName());
             user.setToken(UUID.randomUUID().toString());
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
-            userMapper.insert(user);
+
+            userService.createOrUpdate(user);
             return "redirect:/";
         }
         else {

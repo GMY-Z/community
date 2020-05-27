@@ -7,6 +7,7 @@ import life.manong.community.dto.GIthubUser;
 import life.manong.community.dto.GiteeUser;
 import life.manong.community.model.User;
 import life.manong.community.provider.GiteeProvider;
+import life.manong.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,8 @@ public class GiteeController {
     public String URL;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
+
     /**
      * 请求授权页面
      */
@@ -55,7 +57,7 @@ public class GiteeController {
                 "&state=" + uuid +
                 "&scope=user_info";
 
-        return "redirect:"+url;
+        return "redirect:" + url;
 
     }
 
@@ -103,16 +105,24 @@ public class GiteeController {
         user.setName(giteeUser.getName());
         String token = UUID.randomUUID().toString();
         user.setToken(token);//生成token放到user对象中
-        user.setGmtCreate(System.currentTimeMillis());
-        user.setGmtModified(user.getGmtCreate());
         user.setAvatarUrl(giteeUser.getAvatarUrl());
-        //存到数据库中
-        userMapper.insert(user);
+        //存到数据库中,还是更新用户信息
+        userService.createOrUpdate(user);
         //并且把token放到cookie中
-//        request.getSession().setAttribute("user", giteeUser);
-        response.addCookie(new Cookie("token",token));
+        request.getSession().setAttribute("user", user);
+        System.out.println(user);
+        response.addCookie(new Cookie("token", token));
         return "redirect:/";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
 
+        request.getSession().removeAttribute("user");
+        Cookie token = new Cookie("token", null);
+        token.setMaxAge(0);
+        response.addCookie(token);
+        return "redirect:/";
+    }
 }

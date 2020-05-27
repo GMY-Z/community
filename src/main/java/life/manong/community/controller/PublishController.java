@@ -2,14 +2,18 @@ package life.manong.community.controller;
 
 import life.manong.community.Mapper.QuestionMapper;
 import life.manong.community.Mapper.UserMapper;
+import life.manong.community.dto.QuestionDTO;
 import life.manong.community.model.Question;
 import life.manong.community.model.User;
+import life.manong.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.yaml.snakeyaml.events.Event;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,16 +25,34 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
 
     @GetMapping("/publish")
     public String publish(){
         return "publish";
     }
+
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id")Integer id,
+                       Model model){
+        //通过id找到question，返回页面
+        QuestionDTO questionDTO = questionService.getById(id);
+        model.addAttribute("title", questionDTO.getTitle());
+        model.addAttribute("description", questionDTO.getDescription());
+        model.addAttribute("tag",questionDTO.getTag());
+        model.addAttribute("id", questionDTO.getId());
+        return "publish";
+    }
+
+
+
+
     @PostMapping("/publish")
     public String doPublish(@RequestParam(value = "title",required = false) String title,
                             @RequestParam(value = "description",required = false) String description,
                             @RequestParam(value = "tag" ,required = false) String tag,
+                            @RequestParam(value = "id" ,required = false) Integer id,
                             HttpServletRequest request,
                             Model model){
         model.addAttribute("title", title);
@@ -60,10 +82,9 @@ public class PublishController {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
         question.setCreator(user.getId());
-        questionMapper.create(question);//保存问题
+        question.setId(id);
+        questionService.createOrUpdate(question);//保存问题
         return "redirect:/";
     }
 
