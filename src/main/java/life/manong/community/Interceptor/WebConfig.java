@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
+ *
+ * MVC配置原理
+ *
  * @authon GMY
  * @create 2020-05-25 15:31
  */

@@ -1,10 +1,40 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <script src="/js/jquery-3.5.1.min.js"></script>
+    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="stylesheet" href="css/community.css">
+    <title>地图显示</title>
+    <style>
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-<p th:text="'Hello, ' + ${name1} + '!'" />
+<div th:insert="~{navigation :: nav}"></div>
+<div id="container"></div>
+
+
+<!-- 加载地图JSAPI脚本 -->
+<script th:inline="javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=ef4eb172a670541d93a3ab9fd6cfc7f8"></script>
+<script th:inline="javascript">
+    var map = new AMap.Map('container', {
+        resizeEnable: true, //是否监控地图容器尺寸变化
+        zoom:11, //初始化地图层级
+        center: [116.397428, 39.90923],//初始化地图中心点
+        viewMode:'3D'//使用3D视图
+    });
+</script>
 </body>
 </html>
